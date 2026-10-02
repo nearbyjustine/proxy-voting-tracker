@@ -10,6 +10,9 @@ node_modules/
 *.iml
 .DS_Store
 
+# Design-review artifacts (screenshots, decision payloads)
+.impeccable/
+
 # Local secrets
 .env.local
 *.pem

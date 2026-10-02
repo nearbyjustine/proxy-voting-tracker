@@ -11,6 +11,13 @@ export function formatLocal(iso: string, locale: string): string {
   return new Intl.DateTimeFormat(locale, FIELDS).format(new Date(iso))
 }
 
+/** True when the market's clock reads differently from the viewer's at that instant (otherwise showing both is noise). */
+export function marketDiffers(iso: string, timeZone: string): boolean {
+  const offset = (tz?: string) =>
+    new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'shortOffset' }).formatToParts(new Date(iso)).find((p) => p.type === 'timeZoneName')?.value
+  return offset(timeZone) !== offset(undefined)
+}
+
 /** "in 30 hours" / "2 days ago" */
 export function relative(iso: string, locale: string, now = Date.now()): string {
   const diffMs = new Date(iso).getTime() - now
