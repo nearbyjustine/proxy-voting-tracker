@@ -1,0 +1,8 @@
+{
+  "name": "proxyvote-e2e",
+  "private": true,
+  "type": "module",
+  "description": "Browser E2E with real Keycloak logins and a CSV upload through S3 -> Lambda -> SQS -> API.",
+  "scripts": { "test": "node browser-flows.mjs ../docs/screenshots ../sample-data/harbor-logistics.csv" },
+  "dependencies": { "puppeteer-core": "^24.0.0" }
+}

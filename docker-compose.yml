@@ -1,0 +1,83 @@
+# Local stack for App 2 (ports differ from App 1 so both can run).
+#   1) cd lambda && ./mvnw package        (the Lambda jar must exist before LocalStack starts)
+#   2) docker compose up -d                -> Postgres, Keycloak, LocalStack (+ Lambda, S3 trigger, SQS + DLQ)
+#   3) docker compose --profile full up -d -> also the API and web containers
+name: proxyvote
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: proxyvote
+      POSTGRES_USER: proxyvote
+      POSTGRES_PASSWORD: proxyvote
+    ports: ["5433:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U proxyvote -d proxyvote"]
+      interval: 5s
+      retries: 20
+
+  keycloak:
+    image: keycloak/keycloak:26.4
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: http://localhost:8280
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+      KC_HEALTH_ENABLED: "true"
+    ports: ["8280:8080"]
+    volumes: ["./infra/keycloak:/opt/keycloak/data/import:ro"]
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q UP <&3"]
+      interval: 10s
+      retries: 30
+
+  localstack:
+    image: localstack/localstack:4.9
+    environment:
+      SERVICES: s3,sqs,lambda
+      AWS_DEFAULT_REGION: ap-southeast-1
+      # Lambda functions run as sibling Docker containers; they must join this network to reach LocalStack.
+      LAMBDA_DOCKER_NETWORK: proxyvote_default
+    ports: ["4567:4566"]
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./infra/localstack/init.sh:/etc/localstack/init/ready.d/init.sh:ro"
+      - "./lambda/target/meeting-ingest-0.1.0.jar:/opt/lambda/meeting-ingest.jar:ro"
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /tmp/proxyvote-ready"]
+      interval: 5s
+      retries: 60
+
+  api:
+    profiles: ["full"]
+    build: ./backend
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/proxyvote
+      OIDC_ISSUER: http://localhost:8280/realms/proxyvote
+      OIDC_JWKS: http://keycloak:8080/realms/proxyvote/protocol/openid-connect/certs
+      AWS_ENDPOINT: http://localstack:4566
+      AWS_PUBLIC_ENDPOINT: http://localhost:4567
+      CORS_ORIGINS: http://localhost:8091,http://localhost:5174
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    ports: ["8090:8080"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      keycloak: { condition: service_healthy }
+      localstack: { condition: service_healthy }
+
+  web:
+    profiles: ["full"]
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:8090
+        VITE_OIDC_AUTHORITY: http://localhost:8280/realms/proxyvote
+        VITE_OIDC_CLIENT_ID: proxyvote-web
+    ports: ["8091:80"]
+    depends_on: [api]
+
+volumes:
+  pgdata:

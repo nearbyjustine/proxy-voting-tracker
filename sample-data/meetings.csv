@@ -1,0 +1,6 @@
+externalId,ticker,companyName,country,meetingDate,voteDeadline,marketTimeZone,meetingType,seq,category,title,description,boardRecommendation,payScore,boardIndependencePct
+NRTH-2026-AGM,NRTH,Northwind Energy,US,2026-11-12,2026-11-10T21:00:00Z,America/New_York,AGM,1,DIRECTOR_ELECTION,"Elect Maria Chen as director","Independent director, chair of the audit committee since 2021.",FOR,,62
+NRTH-2026-AGM,NRTH,Northwind Energy,US,2026-11-12,2026-11-10T21:00:00Z,America/New_York,AGM,2,SAY_ON_PAY,"Advisory vote on executive compensation","CEO total pay rose 38% while three-year shareholder return was -12%. Bonus targets were lowered mid-year.",FOR,34,
+NRTH-2026-AGM,NRTH,Northwind Energy,US,2026-11-12,2026-11-10T21:00:00Z,America/New_York,AGM,3,SHAREHOLDER_ENV,"Report on methane emissions reduction targets","Shareholder proposal requesting annual disclosure of methane intensity and reduction targets.",AGAINST,,
+KITE-2026-EGM,KITE,Kite Robotics,JP,2026-11-20,2026-11-17T08:00:00Z,Asia/Tokyo,EGM,1,MERGER,"Approve merger with Sora Automation","All-share merger; combined company headquartered in Osaka. Fairness opinion obtained.",FOR,,
+KITE-2026-EGM,KITE,Kite Robotics,JP,2026-11-20,2026-11-17T08:00:00Z,Asia/Tokyo,EGM,2,DIRECTOR_ELECTION,"Elect Kenji Watanabe as director","Former CEO of Sora Automation; would join as executive director.",FOR,,40

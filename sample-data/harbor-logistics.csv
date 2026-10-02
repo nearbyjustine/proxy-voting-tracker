@@ -1,0 +1,3 @@
+externalId,ticker,companyName,country,meetingDate,voteDeadline,marketTimeZone,meetingType,seq,category,title,description,boardRecommendation,payScore,boardIndependencePct
+HRBR-2026-AGM,HRBR,Harbor Logistics,CA,2026-12-08,2026-12-04T22:00:00Z,America/Toronto,AGM,1,DIRECTOR_ELECTION,Elect Priya Nair as director,"Independent director; former CFO of a port operator.",FOR,,58
+HRBR-2026-AGM,HRBR,Harbor Logistics,CA,2026-12-08,2026-12-04T22:00:00Z,America/Toronto,AGM,2,SAY_ON_PAY,Approve executive compensation,"CEO bonus paid at maximum despite missing two of three targets.",FOR,41,

@@ -1,0 +1,57 @@
+spring:
+  application:
+    name: proxyvote-api
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/proxyvote}
+    username: ${DB_USER:proxyvote}
+    password: ${DB_PASSWORD:proxyvote}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OIDC_ISSUER:http://localhost:8280/realms/proxyvote}
+          jwk-set-uri: ${OIDC_JWKS:http://localhost:8280/realms/proxyvote/protocol/openid-connect/certs}
+
+server:
+  error:
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  cors-allowed-origins: ${CORS_ORIGINS:http://localhost:5174,http://localhost:8091}
+  aws:
+    region: ${AWS_REGION:ap-southeast-1}
+    endpoint: ${AWS_ENDPOINT:http://localhost:4567}               # LocalStack; empty for real AWS
+    public-endpoint: ${AWS_PUBLIC_ENDPOINT:http://localhost:4567} # host the browser uses for pre-signed URLs
+    ingest-bucket: proxyvote-ingest
+    queue-name: meeting-events
+    presign-ttl: 10m
+  ingest:
+    consumer-enabled: ${INGEST_CONSUMER_ENABLED:true}
+    poll-wait-seconds: 10
+  ai:
+    anthropic-api-key: ${ANTHROPIC_API_KEY:}
+    model: claude-opus-5
+    timeout: 60s
+  voting:
+    closing-soon-hours: 48
+
+logging:
+  pattern:
+    level: "%5p [cid=%X{correlationId:-}]"
