@@ -9,6 +9,7 @@ import { formatInZone, formatLocal, marketDiffers } from '@/utils/time'
 import Countdown from '@/components/Countdown.vue'
 import DeadlineBadge from '@/components/DeadlineBadge.vue'
 import ErrorBanner from '@/components/ErrorBanner.vue'
+import ResultBar from '@/components/ResultBar.vue'
 
 const { t, locale } = useI18n()
 const meetings = ref<MeetingSummary[] | null>(null)
@@ -79,22 +80,16 @@ const city = (zone: string) => zone.split('/').pop()!.replace(/_/g, ' ')
           </div>
           <div class="text-right lg:text-left">
             <Countdown :deadline="m.voteDeadline" />
-            <div class="mt-1 text-xs text-ink-2">
-              {{ formatLocal(m.voteDeadline, locale) }}
-              <span v-if="marketDiffers(m.voteDeadline, m.marketTimeZone)" class="hidden xl:block">{{ formatInZone(m.voteDeadline, m.marketTimeZone, locale) }} · {{ t('meetings.marketTime') }}</span>
+            <div class="mt-1 space-y-0.5 text-xs text-ink-2">
+              <span class="block whitespace-nowrap">{{ formatLocal(m.voteDeadline, locale) }}</span>
+              <span v-if="marketDiffers(m.voteDeadline, m.marketTimeZone)" class="block whitespace-nowrap">{{ formatInZone(m.voteDeadline, m.marketTimeZone, locale) }} · {{ t('meetings.marketShort') }}</span>
             </div>
           </div>
         </div>
         <div class="hidden lg:block"><DeadlineBadge :status="m.deadlineStatus" /></div>
         <div class="col-span-2 lg:col-span-1">
-          <div class="flex h-2.5 gap-[3px]" role="img" :aria-label="t('meetings.barLabel', { voted: m.votedCount, total: m.proposalCount })">
-            <span
-              v-for="n in m.proposalCount"
-              :key="n"
-              class="flex-1 rounded-[2px] shadow-[inset_0_0_0_1.5px_var(--rule)]"
-              :class="n <= m.votedCount ? 'bg-ink shadow-none' : ''"
-            />
-          </div>
+          <!-- On the board only cast votes carry colour; uncast segments stay neutral so nothing reads as a result before it is one -->
+          <ResultBar :segments="m.segments.map((s) => ({ id: s.proposalId, call: null, vote: s.vote }))" height="h-2.5" />
           <span class="cond mt-1 block text-sm font-semibold uppercase tracking-wide text-ink-2">{{ t('meetings.votesIn', { voted: m.votedCount, total: m.proposalCount }) }}</span>
         </div>
         <ChevronRight class="hidden size-5 text-ink-2 transition-transform group-hover:translate-x-0.5 lg:block" aria-hidden="true" />

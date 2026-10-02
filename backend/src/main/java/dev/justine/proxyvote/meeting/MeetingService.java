@@ -42,7 +42,7 @@ public class MeetingService {
         this.closingSoon = Duration.ofHours(props.voting().closingSoonHours());
     }
 
-    /** Upcoming meetings plus those that closed in the last 30 days. Two queries total, regardless of count (no N+1). */
+    /** Upcoming meetings plus those that closed in the last 30 days. Three queries total, regardless of count (no N+1). */
     public List<MeetingSummary> list() {
         Organization org = tenant.current();
         Instant now = clock.instant();
@@ -51,8 +51,10 @@ public class MeetingService {
         Map<Long, Vote> voted = proposalIds.isEmpty() ? Map.of()
             : votes.findByOrganizationIdAndProposalIdIn(org.getId(), proposalIds).stream()
                 .collect(Collectors.toMap(v -> v.getProposal().getId(), Function.identity()));
-        return list.stream().map(m -> summary(m, now,
-            (int) m.getProposals().stream().filter(p -> voted.containsKey(p.getId())).count())).toList();
+        Map<Long, Recommendation> calls = proposalIds.isEmpty() ? Map.of()
+            : recommendations.findByOrganizationIdAndProposalIdIn(org.getId(), proposalIds).stream()
+                .collect(Collectors.toMap(r -> r.getProposal().getId(), Function.identity()));
+        return list.stream().map(m -> summary(m, now, calls, voted)).toList();
     }
 
     public MeetingDetail detail(Long id) {
@@ -71,12 +73,18 @@ public class MeetingService {
                 r == null ? null : new RecommendationView(r.getDecision(), r.getRationale(), r.getRulePriority()),
                 v == null ? null : new VoteView(v.getDecision(), v.getSubmittedBy(), v.getSubmittedAt(), v.getVersion()));
         }).toList();
-        return new MeetingDetail(summary(m, clock.instant(), (int) proposals.stream().filter(p -> p.vote() != null).count()), proposals);
+        return new MeetingDetail(summary(m, clock.instant(), recs, vs), proposals);
     }
 
-    private MeetingSummary summary(Meeting m, Instant now, int votedCount) {
+    private MeetingSummary summary(Meeting m, Instant now, Map<Long, Recommendation> calls, Map<Long, Vote> votes) {
+        List<Segment> segments = m.getProposals().stream()
+            .map(p -> new Segment(p.getId(),
+                calls.containsKey(p.getId()) ? calls.get(p.getId()).getDecision() : null,
+                votes.containsKey(p.getId()) ? votes.get(p.getId()).getDecision() : null))
+            .toList();
+        int votedCount = (int) segments.stream().filter(s -> s.vote() != null).count();
         return new MeetingSummary(m.getId(), m.getExternalId(), m.getCompany().getTicker(), m.getCompany().getName(),
             m.getCompany().getCountry(), m.getMeetingDate(), m.getVoteDeadline(), m.getMarketTimeZone(), m.getMeetingType(),
-            DeadlineStatus.of(m.getVoteDeadline(), now, closingSoon), m.getProposals().size(), votedCount);
+            DeadlineStatus.of(m.getVoteDeadline(), now, closingSoon), m.getProposals().size(), votedCount, segments);
     }
 }

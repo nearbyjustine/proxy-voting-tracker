@@ -22,7 +22,7 @@ export default {
     summarize: 'Summarize', summary: 'Summary', payScore: 'Pay score', independence: 'Independent board',
     votedBy: 'Cast by {user}', closedNote: 'Polls closed. Votes can no longer be cast or changed.', againstPolicy: 'Differs from policy call',
     timeLeft: '{d} days {h} hours {m} minutes left', d: 'd', barLabel: '{voted} of {total} votes cast',
-    votesIn: '{voted}/{total} in', voteIn: 'Vote in', rationaleDefault: 'No rule matched; following the board',
+    votesIn: '{voted}/{total} in', voteIn: 'Vote in', marketShort: 'market', sameAsMarket: 'Same as {zone} market time', rationaleDefault: 'No rule matched; following the board',
     empty: 'No meetings yet. Ops can import a meeting file.',
   },
   status: { OPEN: 'Open', CLOSING_SOON: 'Closing soon', CLOSED: 'Closed' },
@@ -36,7 +36,11 @@ export default {
     updated: 'Last changed by {by}', fallback: 'Nothing matched? Follow the board.', moveUp: 'Move rule up', moveDown: 'Move rule down', remove: 'Remove rule',
     rationalePlaceholder: 'Why this call',
   },
-  audit: { title: 'Audit log', lead: 'Append-only. Every vote and policy change, by whom and when.', when: 'When', who: 'Who', what: 'Action', details: 'Details' },
+  audit: {
+    title: 'Audit log', lead: 'Append-only. Every vote and policy change, by whom and when.', when: 'When', who: 'Who', what: 'Action', details: 'Details',
+    yes: 'yes', no: 'no', none: 'none',
+    keys: { decision: 'Vote', previous: 'Previous vote', proposal: 'Proposal', againstRecommendation: 'Differs from policy call', rules: 'Rules', recommendationsRegenerated: 'Calls recalculated', count: 'Calls recalculated' },
+  },
   ingest: {
     title: 'Import meetings', lead: 'Upload a meeting file. It goes straight to storage, a Lambda splits it into meetings, and they land on the board within seconds.',
     choose: 'Choose a CSV file', upload: 'Upload', uploading: 'Uploading…', waiting: 'Uploaded. Waiting for results…', arrived: '{n} new meeting on the board | {n} new meetings on the board',

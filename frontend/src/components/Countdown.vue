@@ -2,16 +2,18 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { countdownParts, pad, useNow } from '@/utils/clock'
+import { relative } from '@/utils/time'
 
 /** The broadcast clock: days + HH:MM:SS to the vote deadline, from one shared ticking "now". */
 const props = withDefaults(defineProps<{ deadline: string; size?: 'sm' | 'lg' }>(), { size: 'sm' })
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const now = useNow()
 const c = computed(() => countdownParts(props.deadline, now.value))
 </script>
 
 <template>
-  <span v-if="c.closed" class="cond font-bold uppercase text-ink-2" :class="size === 'lg' ? 'text-4xl' : 'text-lg'">{{ t('status.CLOSED') }}</span>
+  <!-- Closed: the status chip already says "closed", so the clock says how long ago it closed -->
+  <span v-if="c.closed" class="cond font-bold text-ink-2" :class="size === 'lg' ? 'text-4xl uppercase' : 'text-lg'">{{ size === 'lg' ? t('status.CLOSED') : relative(deadline, locale) }}</span>
   <span
     v-else
     class="cond inline-flex items-baseline gap-1 font-bold leading-none"

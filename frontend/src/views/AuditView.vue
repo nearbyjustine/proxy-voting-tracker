@@ -3,7 +3,8 @@ import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { Api } from '@/api/endpoints'
-import type { AuditEvent, Page } from '@/api/types'
+import type { AuditEvent, Decision, Page } from '@/api/types'
+import DecisionMark from '@/components/DecisionMark.vue'
 import { formatLocal } from '@/utils/time'
 
 const { t, locale } = useI18n()
@@ -16,7 +17,14 @@ onMounted(() => load())
 
 const tone = (action: string) =>
   action.startsWith('VOTE') ? 'bg-for-wash text-for' : action.startsWith('POLICY') ? 'bg-lit-wash text-lit-ink' : 'bg-panel-2 text-ink-2'
-const show = (v: unknown) => (v === null || v === undefined ? '—' : String(v))
+const isDecision = (v: unknown): v is Decision => v === 'FOR' || v === 'AGAINST' || v === 'ABSTAIN'
+const show = (v: unknown) => (v === null || v === undefined ? t('audit.none') : v === true || v === 'true' ? t('audit.yes') : v === false || v === 'false' ? t('audit.no') : String(v))
+/** Audit details are stored with code keys; show them in product language. Unknown keys fall back to the raw key. */
+const label = (key: string) => {
+  const k = `audit.keys.${key}`
+  const translated = t(k)
+  return translated === k ? key : translated
+}
 </script>
 
 <template>
@@ -42,10 +50,13 @@ const show = (v: unknown) => (v === null || v === undefined ? '—' : String(v))
           <td class="cond whitespace-nowrap text-lg font-bold">{{ e.actor }}</td>
           <td><span class="cond whitespace-nowrap rounded-[4px] px-2 py-0.5 text-sm font-bold uppercase tracking-wider" :class="tone(e.action)">{{ e.action.replace(/_/g, ' ') }}</span></td>
           <td>
-            <dl class="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-              <div v-for="(v, k) in e.details" :key="k" class="flex gap-1.5">
-                <dt class="text-ink-2">{{ k }}</dt>
-                <dd class="font-medium">{{ show(v) }}</dd>
+            <dl class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-sm">
+              <div v-for="(v, k) in e.details" :key="k" class="flex items-center gap-1.5">
+                <dt class="text-ink-2">{{ label(String(k)) }}</dt>
+                <dd class="font-medium">
+                  <DecisionMark v-if="isDecision(v)" :decision="v" />
+                  <template v-else>{{ show(v) }}</template>
+                </dd>
               </div>
             </dl>
           </td>

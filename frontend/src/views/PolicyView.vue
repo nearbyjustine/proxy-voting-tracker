@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { AnimatePresence, motion } from 'motion-v'
-import { ArrowDown, ArrowRight, ArrowUp, CircleCheck, CornerDownRight, Plus, RefreshCw, Trash2 } from 'lucide-vue-next'
+import { ArrowDown, ArrowRight, ArrowUp, Check, CircleCheck, CornerDownRight, Minus, Plus, RefreshCw, Trash2, X } from 'lucide-vue-next'
 import { Api } from '@/api/endpoints'
 import { ApiError } from '@/api/client'
 import type { Category, ConditionType, Decision, Policy, Rule } from '@/api/types'
@@ -47,6 +47,12 @@ function move(i: number, delta: number) {
   rules.value = copy
 }
 const needsThreshold = (c: ConditionType | null) => !!c && c !== 'BOARD_RECOMMENDS_AGAINST'
+const glyph = { FOR: Check, AGAINST: X, ABSTAIN: Minus }
+const solid = {
+  FOR: 'border-for bg-for text-white dark:text-[#06102a]',
+  AGAINST: 'border-against bg-against text-white dark:text-[#2a0904]',
+  ABSTAIN: 'border-abstain bg-abstain text-white dark:text-[#0b1220]',
+}
 
 async function save() {
   error.value = null
@@ -149,17 +155,31 @@ onMounted(load)
             />
             <ArrowRight class="size-4 text-ink-2" aria-hidden="true" />
             <span class="label">{{ t('policy.call') }}</span>
-            <select
-              v-model="r.decision"
-              class="input cond py-1.5 text-[0.95rem] font-bold uppercase"
-              :class="{ FOR: 'text-for', AGAINST: 'text-against', ABSTAIN: 'text-abstain' }[r.decision]"
-              :disabled="!editable"
-              :aria-label="t('policy.call')"
-            >
-              <option v-for="d in decisions" :key="d" :value="d">{{ t(`decision.${d}`) }}</option>
-            </select>
-            <span class="label">{{ t('policy.because') }}</span>
-            <input v-model="r.rationale" class="input min-w-48 flex-1 py-1.5" :placeholder="t('policy.rationalePlaceholder')" :disabled="!editable" />
+            <div class="inline-flex gap-1" role="radiogroup" :aria-label="t('policy.call')">
+              <button
+                v-for="d in decisions"
+                :key="d"
+                type="button"
+                role="radio"
+                :aria-checked="r.decision === d"
+                :disabled="!editable"
+                class="cond inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[0.9rem] font-bold uppercase tracking-wide transition-colors duration-150 disabled:cursor-default"
+                :class="r.decision === d ? solid[d] : 'border-rule bg-panel text-ink-2 enabled:hover:bg-panel'"
+                @click="r.decision = d"
+              >
+                <component :is="glyph[d]" class="size-3.5" stroke-width="3" aria-hidden="true" />{{ t(`decision.${d}`) }}
+              </button>
+            </div>
+            <label class="mt-1 flex w-full items-start gap-2">
+              <span class="label pt-2">{{ t('policy.because') }}</span>
+              <textarea
+                v-model="r.rationale"
+                rows="1"
+                class="input field-sizing-content min-h-9 flex-1 resize-none py-1.5 leading-snug"
+                :placeholder="t('policy.rationalePlaceholder')"
+                :disabled="!editable"
+              />
+            </label>
           </div>
           <div v-if="editable" class="col-start-2 flex gap-1 md:col-start-auto">
             <button class="btn btn-ghost btn-icon" :disabled="i === 0" :aria-label="t('policy.moveUp')" @click="move(i, -1)"><ArrowUp class="size-4" aria-hidden="true" /></button>

@@ -22,7 +22,7 @@ export default {
     summarize: 'Résumer', summary: 'Résumé', payScore: 'Score de rémunération', independence: 'Conseil indépendant',
     votedBy: 'Voté par {user}', closedNote: 'Scrutin clos. Les votes ne peuvent plus être exprimés ni modifiés.', againstPolicy: 'Diffère de la politique',
     timeLeft: 'Il reste {d} jours {h} heures {m} minutes', d: 'j', barLabel: '{voted} votes exprimés sur {total}',
-    votesIn: '{voted}/{total} exprimés', voteIn: 'Vote enregistré', rationaleDefault: 'Aucune règle ; suivre le conseil',
+    votesIn: '{voted}/{total} exprimés', voteIn: 'Vote enregistré', marketShort: 'marché', sameAsMarket: 'Identique à l’heure du marché ({zone})', rationaleDefault: 'Aucune règle ; suivre le conseil',
     empty: 'Aucune assemblée. L’équipe ops peut importer un fichier.',
   },
   status: { OPEN: 'Ouvert', CLOSING_SOON: 'Bientôt clos', CLOSED: 'Clos' },
@@ -36,7 +36,11 @@ export default {
     updated: 'Modifiée par {by}', fallback: 'Aucune règle ? Suivre le conseil.', moveUp: 'Monter la règle', moveDown: 'Descendre la règle', remove: 'Supprimer la règle',
     rationalePlaceholder: 'Pourquoi cette décision',
   },
-  audit: { title: 'Journal d’audit', lead: 'En ajout seul. Chaque vote et chaque changement de politique, par qui et quand.', when: 'Quand', who: 'Qui', what: 'Action', details: 'Détails' },
+  audit: {
+    title: 'Journal d’audit', lead: 'En ajout seul. Chaque vote et chaque changement de politique, par qui et quand.', when: 'Quand', who: 'Qui', what: 'Action', details: 'Détails',
+    yes: 'oui', no: 'non', none: 'aucun',
+    keys: { decision: 'Vote', previous: 'Vote précédent', proposal: 'Résolution', againstRecommendation: 'Diffère de la politique', rules: 'Règles', recommendationsRegenerated: 'Décisions recalculées', count: 'Décisions recalculées' },
+  },
   ingest: {
     title: 'Importer des assemblées', lead: 'Téléversez un fichier. Il part directement vers le stockage, une Lambda le découpe en assemblées, qui arrivent au tableau en quelques secondes.',
     choose: 'Choisir un fichier CSV', upload: 'Téléverser', uploading: 'Téléversement…', waiting: 'Téléversé. En attente des résultats…', arrived: '{n} nouvelle assemblée | {n} nouvelles assemblées',

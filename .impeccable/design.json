@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-02T00:00:00Z",
+  "title": "Design System: Proxy Voting",
+  "extensions": {
+    "colorMeta": {
+      "broadcast-navy": { "role": "primary", "displayName": "Broadcast Navy", "canonical": "#0e1526", "tonalRamp": ["oklch(15% 0.04 265)", "oklch(25% 0.045 265)", "oklch(35% 0.045 265)", "oklch(48% 0.04 265)", "oklch(60% 0.035 265)", "oklch(72% 0.025 265)", "oklch(85% 0.015 265)", "oklch(95% 0.006 265)"] },
+      "desk-lamp": { "role": "primary", "displayName": "Desk Lamp", "canonical": "#ffcf3a", "tonalRamp": ["oklch(25% 0.05 85)", "oklch(35% 0.07 85)", "oklch(48% 0.1 85)", "oklch(62% 0.13 85)", "oklch(75% 0.16 85)", "oklch(87% 0.17 88)", "oklch(92% 0.1 90)", "oklch(97% 0.04 92)"] },
+      "for-blue": { "role": "secondary", "displayName": "For Blue", "canonical": "#1f4fcc", "tonalRamp": ["oklch(22% 0.08 265)", "oklch(32% 0.13 265)", "oklch(42% 0.18 265)", "oklch(48% 0.2 265)", "oklch(62% 0.17 265)", "oklch(72% 0.12 265)", "oklch(85% 0.06 265)", "oklch(94% 0.025 265)"] },
+      "against-red": { "role": "secondary", "displayName": "Against Red", "canonical": "#c4351f", "tonalRamp": ["oklch(22% 0.06 33)", "oklch(32% 0.1 33)", "oklch(44% 0.15 33)", "oklch(54% 0.18 33)", "oklch(66% 0.17 33)", "oklch(76% 0.12 33)", "oklch(87% 0.06 33)", "oklch(95% 0.025 33)"] },
+      "abstain-grey": { "role": "secondary", "displayName": "Abstain Grey", "canonical": "#5c6575", "tonalRamp": ["oklch(20% 0.015 260)", "oklch(30% 0.018 260)", "oklch(40% 0.02 260)", "oklch(50% 0.022 260)", "oklch(62% 0.02 260)", "oklch(74% 0.016 260)", "oklch(86% 0.01 260)", "oklch(95% 0.005 260)"] },
+      "studio-ground": { "role": "neutral", "displayName": "Studio Ground", "canonical": "#edf0f5" },
+      "board-white": { "role": "neutral", "displayName": "Board White", "canonical": "#ffffff" },
+      "board-recess": { "role": "neutral", "displayName": "Board Recess", "canonical": "#f5f7fa" },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#0e1526" },
+      "ink-secondary": { "role": "neutral", "displayName": "Secondary Ink", "canonical": "#4a5568" },
+      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "#d6dbe3" },
+      "night-ground": { "role": "neutral", "displayName": "The Desk at Night", "canonical": "#080d19" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Race-header ticker and the large countdown. Condensed, uppercase." },
+      "headline": { "displayName": "Headline", "purpose": "One uppercase condensed page name per screen, followed by a one-line lead." },
+      "clock": { "displayName": "Clock / Ticker", "purpose": "Board tickers and row countdowns; seconds demoted to 0.55em in secondary ink." },
+      "title": { "displayName": "Title", "purpose": "Proposal titles." },
+      "body": { "displayName": "Body", "purpose": "Descriptions and rationales, max 68ch." },
+      "label": { "displayName": "Label", "purpose": "Table heads and field labels; uppercase, 85% width, secondary ink." }
+    },
+    "shadows": [
+      { "name": "board", "value": "0 1px 2px rgb(14 21 38 / 0.06), 0 8px 24px -12px rgb(14 21 38 / 0.18)", "purpose": "Lifts results boards off the studio ground. Dark: 0 1px 2px rgb(0 0 0 / 0.5), 0 12px 28px -14px rgb(0 0 0 / 0.7). The only shadow." },
+      { "name": "focus-halo", "value": "0 0 0 3px color-mix(in oklab, var(--for) 22%, transparent)", "purpose": "Focused inputs." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "All easing in the system." },
+      { "name": "route", "value": "180ms fade + 6px rise", "purpose": "Route change." },
+      { "name": "row-stagger", "value": "35ms per row, max 8", "purpose": "Board rows entering." },
+      { "name": "segment-fill", "value": "450ms scaleX from left", "purpose": "A result segment filling when a vote is cast." },
+      { "name": "vote-stamp", "value": "320ms, scale 1.8 to 1, rotate -14deg to -4deg", "purpose": "The VOTE IN stamp beside YOUR VOTE." },
+      { "name": "rule-reorder", "value": "300ms layout transition", "purpose": "Policy rule reorder." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "container", "value": "1240px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Solid ink action: save, sign in, open the board.",
+      "html": "<button class=\"ds-btn\">Save</button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 0.95rem; border: 0; border-radius: 7px; font-family: 'Archivo Variable', system-ui, sans-serif; font-weight: 600; font-size: 0.875rem; background: var(--ink, #0e1526); color: var(--panel, #fff); cursor: pointer; transition: background-color 150ms, transform 120ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn:hover { background: color-mix(in oklab, var(--ink, #0e1526) 86%, var(--for, #1f4fcc)); } .ds-btn:active { transform: scale(0.97); } .ds-btn:focus-visible { outline: 2px solid var(--for, #1f4fcc); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary actions: add rule, recalculate, summarize, reorder.",
+      "html": "<button class=\"ds-btn-ghost\">Add rule</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 0.95rem; border: 0; border-radius: 7px; font-family: 'Archivo Variable', system-ui, sans-serif; font-weight: 600; font-size: 0.875rem; background: transparent; color: var(--ink, #0e1526); box-shadow: inset 0 0 0 1px var(--rule, #d6dbe3); cursor: pointer; transition: background-color 150ms; } .ds-btn-ghost:hover { background: var(--panel-2, #f5f7fa); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--for, #1f4fcc); outline-offset: 2px; }"
+    },
+    {
+      "name": "Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Text, select and textarea fields in the policy editor.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-label\">Policy name</span><input class=\"ds-input\" value=\"Stewardship policy\" /></label>",
+      "css": ".ds-field { display: grid; gap: 6px; } .ds-label { font-family: 'Archivo Variable', system-ui, sans-serif; font-stretch: 85%; font-size: 0.7rem; font-weight: 650; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-2, #4a5568); } .ds-input { background: var(--panel, #fff); color: var(--ink, #0e1526); border: 1px solid var(--rule, #d6dbe3); border-radius: 7px; padding: 0.5rem 0.65rem; font: 0.875rem 'Archivo Variable', system-ui, sans-serif; transition: border-color 150ms, box-shadow 150ms; } .ds-input:focus { outline: none; border-color: var(--for, #1f4fcc); box-shadow: 0 0 0 3px color-mix(in oklab, var(--for, #1f4fcc) 22%, transparent); }"
+    },
+    {
+      "name": "Broadcast Bar",
+      "kind": "nav",
+      "refersTo": "broadcast-bar",
+      "description": "Navy top bar with app mark, tenant, yellow desk clock and condensed nav with a lamp underline on the active item.",
+      "html": "<header class=\"ds-bar\"><div class=\"ds-bar-top\"><span class=\"ds-mark\"><svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.2\"><path d=\"M3 8.5l3 3 7-7\"/></svg></span><span class=\"ds-name\">Proxy Voting</span><span class=\"ds-acting\">Acting for</span><span>Stewardship Pension Fund</span><span class=\"ds-clock\">23:46:22</span></div><nav class=\"ds-nav\"><a class=\"ds-nav-item is-active\" href=\"#\">Meetings</a><a class=\"ds-nav-item\" href=\"#\">Voting policy</a><a class=\"ds-nav-item\" href=\"#\">Audit log</a></nav></header>",
+      "css": ".ds-bar { background: #0e1526; color: #e8edf6; font-family: 'Archivo Variable', system-ui, sans-serif; padding: 0 16px; } .ds-bar-top { display: flex; align-items: center; gap: 10px; padding: 12px 0; } .ds-mark { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 5px; background: #1f4fcc; } .ds-name { font-stretch: 68%; font-size: 1.25rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.025em; margin-right: 16px; } .ds-acting { font-stretch: 68%; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: #98a4b9; } .ds-clock { margin-left: auto; font-stretch: 68%; font-size: 1.125rem; font-weight: 700; color: #ffcf3a; font-variant-numeric: tabular-nums; } .ds-nav { display: flex; gap: 4px; } .ds-nav-item { position: relative; padding: 4px 12px 10px; font-stretch: 68%; font-size: 0.95rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #98a4b9; text-decoration: none; transition: color 150ms; } .ds-nav-item:hover { color: #fff; } .ds-nav-item:focus-visible { outline: 2px solid #6d97ff; outline-offset: 2px; } .ds-nav-item.is-active { color: #fff; } .ds-nav-item.is-active::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: 0; height: 3px; border-radius: 2px 2px 0 0; background: #ffcf3a; }"
+    },
+    {
+      "name": "Status Chips",
+      "kind": "chip",
+      "refersTo": "status-closing-soon",
+      "description": "OPEN, CLOSING SOON (lamp, pulsing dot), CLOSED.",
+      "html": "<span class=\"ds-status ds-open\">Open</span> <span class=\"ds-status ds-soon\"><i></i>Closing soon</span> <span class=\"ds-status ds-closed\">Closed</span>",
+      "css": ".ds-status { display: inline-flex; align-items: center; gap: 6px; border-radius: 4px; padding: 2px 8px; font-family: 'Archivo Variable', system-ui, sans-serif; font-stretch: 68%; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; } .ds-open { background: var(--for-wash, #e3eafc); color: var(--for, #1f4fcc); } .ds-soon { background: #ffcf3a; color: #2b2000; } .ds-soon i { width: 6px; height: 6px; border-radius: 50%; background: #2b2000; } .ds-closed { background: var(--panel-2, #f5f7fa); color: var(--ink-2, #4a5568); }"
+    },
+    {
+      "name": "Decision Marks",
+      "kind": "chip",
+      "refersTo": "decision-for",
+      "description": "Glyph + word, never colour alone: FOR check, AGAINST x, ABSTAIN minus.",
+      "html": "<span class=\"ds-mark-d ds-for\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 6 9 17l-5-5\"/></svg>For</span> <span class=\"ds-mark-d ds-against\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\"><path d=\"M18 6 6 18M6 6l12 12\"/></svg>Against</span> <span class=\"ds-mark-d ds-abstain\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\"><path d=\"M5 12h14\"/></svg>Abstain</span>",
+      "css": ".ds-mark-d { display: inline-flex; align-items: center; gap: 6px; border-radius: 5px; padding: 2px 6px; font-family: 'Archivo Variable', system-ui, sans-serif; font-stretch: 68%; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; } .ds-for { background: var(--for-wash, #e3eafc); color: var(--for, #1f4fcc); } .ds-against { background: var(--against-wash, #fbe5e1); color: var(--against, #c4351f); } .ds-abstain { background: var(--abstain-wash, #e9ecf1); color: var(--abstain, #5c6575); }"
+    },
+    {
+      "name": "Result Bar",
+      "kind": "custom",
+      "refersTo": "board",
+      "description": "One segment per proposal; neutral until a vote is cast, then filled in the vote's colour, with an n/m IN count.",
+      "html": "<div class=\"ds-count\"><div class=\"ds-bar-seg\" role=\"img\" aria-label=\"1 of 3 voted\"><span class=\"is-against\"></span><span></span><span></span></div><span class=\"ds-count-label\">1/3 in</span></div>",
+      "css": ".ds-count { width: 220px; font-family: 'Archivo Variable', system-ui, sans-serif; } .ds-bar-seg { display: flex; gap: 3px; height: 10px; } .ds-bar-seg span { flex: 1; border-radius: 3px; box-shadow: inset 0 0 0 1.5px var(--rule, #d6dbe3); transition: background-color 450ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-bar-seg span.is-for { background: var(--for, #1f4fcc); } .ds-bar-seg span.is-against { background: var(--against, #c4351f); } .ds-bar-seg span.is-abstain { background: var(--abstain, #5c6575); } .ds-count-label { display: block; margin-top: 4px; font-stretch: 68%; font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.025em; color: var(--ink-2, #4a5568); }"
+    },
+    {
+      "name": "Closing-Soon Board Row",
+      "kind": "card",
+      "refersTo": "board-row-closing-soon",
+      "description": "A results-board row lit amber because its deadline is under 48 hours; ticker and countdown in condensed numerals.",
+      "html": "<div class=\"ds-board\"><a class=\"ds-row is-lit\" href=\"#\"><span class=\"ds-ticker\">PSDN</span><span class=\"ds-co\"><b>Poseidon Shipping</b><small>AGM · 2026-10-05</small></span><span class=\"ds-clockcell\"><span class=\"ds-cd\">1<small>d</small> 01:22<em>:32</em></span><small>Oct 4, 2026, 1:08 AM GMT+8</small></span></a></div>",
+      "css": ".ds-board { background: var(--panel, #fff); border: 1px solid var(--rule, #d6dbe3); border-radius: 10px; box-shadow: 0 1px 2px rgb(14 21 38 / 0.06), 0 8px 24px -12px rgb(14 21 38 / 0.18); overflow: hidden; font-family: 'Archivo Variable', system-ui, sans-serif; color: var(--ink, #0e1526); } .ds-row { display: flex; align-items: center; gap: 16px; padding: 16px 20px; color: inherit; text-decoration: none; font-variant-numeric: tabular-nums; transition: background-color 150ms; } .ds-row:hover { background: var(--panel-2, #f5f7fa); } .ds-row.is-lit, .ds-row.is-lit:hover { background: var(--lit-wash, #fff4cc); } .ds-row:focus-visible { outline: 2px solid var(--for, #1f4fcc); outline-offset: -2px; } .ds-ticker { width: 4.5rem; font-stretch: 68%; font-size: 1.7rem; font-weight: 700; line-height: 1; } .ds-co { display: grid; flex: 1; } .ds-co small, .ds-clockcell small { font-size: 0.75rem; color: var(--ink-2, #4a5568); } .ds-clockcell { display: grid; gap: 4px; } .ds-cd { font-stretch: 68%; font-size: 1.5rem; font-weight: 700; line-height: 1; } .ds-cd small { font-size: 0.45em; font-weight: 600; color: var(--ink-2, #4a5568); } .ds-cd em { font-style: normal; font-size: 0.55em; color: var(--ink-2, #4a5568); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Results Desk",
+    "overview": "Proxy season is run like election night. Each shareholder meeting is a race with a deadline; the organisation's voting policy \"calls\" each proposal; the votes the organisation casts are the count. The interface borrows the material of a broadcast results desk: a navy broadcast bar with a yellow desk clock running in the corner, a cool studio-grey ground, white results boards laid on it, condensed broadcast numerals for tickers and clocks, segmented result bars that fill as votes come in, and rows that light amber when a race is about to close.\n\nThe system is dense and operational, built for daily desktop use by analysts and voters, but it must read instantly in a screen share. Hierarchy comes from type width and weight (the condensed cut of one family against its normal width), not from colour blocks or stat cards. Colour is reserved for meaning: three decision colours, one lamp colour for urgency, and nothing decorative. The world explicitly refuses the stat-card fintech dashboard: no KPI tiles, no gradient hero numbers, no chart-for-the-sake-of-a-chart.\n\nLight and dark are both first-class. Dark is \"the desk at night\": the same roles on a deep navy ground, with decision colours lifted for contrast and the lamp yellow unchanged.",
+    "keyCharacteristics": [
+      "One variable family (Archivo), two widths: condensed (68%) for numerals and headlines, normal for reading.",
+      "Tabular numerals everywhere, so clocks and counts never jitter.",
+      "FOR blue / AGAINST red / ABSTAIN grey, always with a check / x / minus glyph and the word.",
+      "Amber \"lit\" rows and chips mean closing within 48 hours; nothing else uses the lamp except the desk clock and active-nav underline.",
+      "Segmented result bars, one segment per proposal, filling left-to-right as votes are cast.",
+      "Live countdown clocks (days + HH:MM, seconds demoted) next to exact local and market times."
+    ],
+    "rules": [
+      { "name": "The Never-Colour-Alone Rule", "body": "A decision is always a glyph + word + colour: check for FOR, x for AGAINST, minus for ABSTAIN. A coloured swatch, dot or bar segment never stands in for a decision without its count label or mark nearby.", "section": "colors" },
+      { "name": "The Lamp Means Deadline Rule", "body": "Desk Lamp yellow is reserved for time pressure and \"now\": the desk clock, the active tab, closing-soon rows, chips and rings. It never decorates, and it is never used for a decision.", "section": "colors" },
+      { "name": "The Only-Cast-Votes-Colour Rule", "body": "On the Meetings board, result segments are neutral (outlined in rule) until a vote is cast, then fill with the decision colour. Nothing reads as a result before it is one. On a race (meeting detail), the segment outline may carry the policy's call, and the fill is still only the cast vote.", "section": "colors" },
+      { "name": "The Two-Widths Rule", "body": "Numbers, tickers, headlines and chips use the condensed cut; anything a person reads as a sentence uses the normal cut. Do not introduce a second family.", "section": "typography" },
+      { "name": "The Chip-After-Heading Rule", "body": "Categories and classifications sit as inline chips after or beside the thing they classify (a category chip leads the proposal description, the status chip sits beside the meeting meta). There are no eyebrow lines above headings.", "section": "typography" },
+      { "name": "The Deadline-First Rule", "body": "Deadlines appear as a live countdown plus the exact local time. On a race the market time is always stated, or \"Same as <city> market time\" when the zones match; on the board the market line appears whenever it differs from local time, with the market city always in the Market column.", "section": "layout" },
+      { "name": "The One-Lift Rule", "body": "Boards are the only lifted surface. Rows, chips, buttons and notices are flat.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do pair every decision colour with its glyph (check / x / minus) and its word.",
+      "Do keep result-bar segments neutral on the board until a vote is cast; only cast votes carry colour.",
+      "Do light a row with Desk Lamp Wash (and a race header with a 2px lamp ring) when its deadline is under 48 hours.",
+      "Do set tickers, clocks, counts, headlines and chips in the condensed cut with tabular numerals.",
+      "Do show the countdown with the exact local deadline, and the market time (or \"Same as <city> market time\") on every race.",
+      "Do place category and status as inline chips after or beside what they classify.",
+      "Do keep the tenant (\"Acting for\") visible in the broadcast bar at every width."
+    ],
+    "donts": [
+      "Don't build stat cards, KPI tiles or big-number dashboard summaries; the board rows are the summary.",
+      "Don't put eyebrow or kicker lines above headings.",
+      "Don't use Desk Lamp yellow for anything that is not time pressure or \"now\".",
+      "Don't convey a decision by colour alone, including in bars, dots or row tints.",
+      "Don't add shadows beyond the single board shadow, or lift rows and chips on hover.",
+      "Don't introduce a second typeface; use Archivo's width axis instead.",
+      "Don't animate for decoration; motion follows a consequential action or a route change."
+    ]
+  }
+}

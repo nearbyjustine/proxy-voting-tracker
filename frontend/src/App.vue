@@ -87,8 +87,17 @@ function setLocale(value: string) {
           </template>
           <button v-else class="btn ml-1 bg-[#1f4fcc] px-3 py-1.5 text-white hover:bg-[#2b5be0]" @click="auth.login('/')">{{ t('app.signIn') }}</button>
         </div>
+        <!-- Phones: the tenant and the desk clock stay visible on their own line -->
+        <div v-if="me?.orgName" class="flex w-full items-center justify-between gap-3 border-t border-white/10 pt-2 text-sm md:hidden">
+          <span class="truncate"><span class="cond mr-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-[#98a4b9]">{{ t('app.actingFor') }}</span>{{ me.orgName }}</span>
+          <span class="cond shrink-0 text-base font-bold tabular-nums text-[#ffcf3a]" aria-hidden="true">{{ clock }}</span>
+        </div>
       </div>
-      <nav v-if="links.length" class="mx-auto flex max-w-[1240px] gap-1 overflow-x-auto px-3 sm:px-5" :aria-label="t('app.title')">
+      <nav
+        v-if="links.length"
+        class="mx-auto flex max-w-[1240px] gap-1 overflow-x-auto px-3 [mask-image:linear-gradient(to_right,black_82%,transparent)] sm:px-5 md:[mask-image:none]"
+        :aria-label="t('app.title')"
+      >
         <RouterLink
           v-for="l in links"
           :key="l.to"

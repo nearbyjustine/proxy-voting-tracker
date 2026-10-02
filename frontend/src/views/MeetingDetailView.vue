@@ -110,6 +110,7 @@ onMounted(load)
             <div v-if="marketDiffers(detail.meeting.voteDeadline, detail.meeting.marketTimeZone)">
               <dd class="inline">{{ formatInZone(detail.meeting.voteDeadline, detail.meeting.marketTimeZone, locale) }}</dd> <dt class="inline">· {{ t('meetings.marketTime') }}</dt>
             </div>
+            <div v-else>{{ t('meetings.sameAsMarket', { zone: detail.meeting.marketTimeZone.split('/').pop()!.replace(/_/g, ' ') }) }}</div>
           </dl>
         </div>
       </div>
@@ -126,9 +127,10 @@ onMounted(load)
       <div class="cond text-5xl font-bold leading-none text-ink-2" aria-hidden="true">{{ p.seq }}</div>
 
       <div class="min-w-0">
-        <div class="label">{{ t(`category.${p.category}`) }}</div>
-        <h2 class="mt-1 text-xl font-semibold leading-snug">{{ p.title }}</h2>
-        <p v-if="p.description" class="mt-2 max-w-[68ch] text-ink-2">{{ p.description }}</p>
+        <h2 class="text-xl font-semibold leading-snug">{{ p.title }}</h2>
+        <p class="mt-2 max-w-[68ch] text-ink-2">
+          <span class="cond mr-2 inline-block rounded-[4px] bg-panel-2 px-1.5 py-px text-[0.8rem] font-semibold uppercase tracking-wide text-ink">{{ t(`category.${p.category}`) }}</span>{{ p.description }}
+        </p>
 
         <div v-if="p.payScore !== null || p.boardIndependencePct !== null" class="mt-4 grid max-w-md gap-3">
           <div v-if="p.payScore !== null">
@@ -149,8 +151,8 @@ onMounted(load)
             :animate="{ opacity: 1, height: 'auto' }"
             :transition="{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }"
           >
-            <div class="label mb-1 flex items-center gap-1.5"><ScrollText class="size-3.5" aria-hidden="true" />{{ t('meetings.summary') }} · {{ p.aiSummarySource }}</div>
-            {{ p.aiSummary }}
+            <ScrollText class="mr-1.5 inline size-4 align-[-3px] text-ink-2" aria-hidden="true" /><strong class="font-semibold">{{ t('meetings.summary') }}</strong>
+            <span class="text-ink-2"> ({{ p.aiSummarySource }}): </span>{{ p.aiSummary }}
           </motion.div>
         </AnimatePresence>
         <button v-if="!p.aiSummary && auth.hasRole('ANALYST')" class="btn btn-ghost mt-4 py-1.5 text-sm" :disabled="busy === p.id" @click="summarize(p)">
@@ -171,8 +173,25 @@ onMounted(load)
         </div>
 
         <div>
-          <div class="label mb-1.5">{{ t('meetings.yourVote') }}</div>
-          <div class="relative">
+          <div class="mb-1.5 flex h-6 items-center justify-between">
+            <span class="label">{{ t('meetings.yourVote') }}</span>
+            <!-- The signature moment: the vote is stamped in (beside the label, never over the buttons). -->
+            <AnimatePresence>
+              <motion.span
+                v-if="justVoted === p.id && p.vote"
+                :key="p.vote.decision + p.vote.version"
+                class="cond pointer-events-none rounded-[4px] border-2 px-2 py-px text-sm font-bold uppercase tracking-[0.12em]"
+                :class="{ FOR: 'border-for text-for', AGAINST: 'border-against text-against', ABSTAIN: 'border-abstain text-abstain' }[p.vote.decision]"
+                :initial="{ opacity: 0, scale: 1.8, rotate: -14 }"
+                :animate="{ opacity: 1, scale: 1, rotate: -4 }"
+                :exit="{ opacity: 0 }"
+                :transition="{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }"
+              >
+                {{ t('meetings.voteIn') }}
+              </motion.span>
+            </AnimatePresence>
+          </div>
+          <div>
             <div class="grid grid-cols-3 gap-1.5" role="radiogroup" :aria-label="t('meetings.yourVote')">
               <button
                 v-for="o in decisions"
@@ -187,22 +206,7 @@ onMounted(load)
                 <component :is="o.icon" class="size-4" stroke-width="3" aria-hidden="true" />{{ t(`decision.${o.d}`) }}
               </button>
             </div>
-            <!-- The signature moment: the vote is stamped in. -->
-            <AnimatePresence>
-              <motion.span
-                v-if="justVoted === p.id && p.vote"
-                :key="p.vote.decision + p.vote.version"
-                class="cond pointer-events-none absolute -right-2 -top-7 rounded-[4px] border-2 px-2 py-0.5 text-sm font-bold uppercase tracking-[0.12em]"
-                :class="{ FOR: 'border-for text-for', AGAINST: 'border-against text-against', ABSTAIN: 'border-abstain text-abstain' }[p.vote.decision]"
-                :style="{ background: 'var(--panel)' }"
-                :initial="{ opacity: 0, scale: 1.8, rotate: -14 }"
-                :animate="{ opacity: 1, scale: 1, rotate: -6 }"
-                :exit="{ opacity: 0 }"
-                :transition="{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }"
-              >
-                {{ t('meetings.voteIn') }}
-              </motion.span>
-            </AnimatePresence>
+
           </div>
           <p v-if="p.vote" class="mt-2 text-xs text-ink-2">{{ t('meetings.votedBy', { user: p.vote.submittedBy }) }}</p>
           <p v-if="p.vote && p.recommendation && p.vote.decision !== p.recommendation.decision" class="mt-1 flex items-center gap-1.5 text-xs font-semibold text-against">
