@@ -9,6 +9,7 @@ export interface MeetingSummary {
   id: number; externalId: string; ticker: string; companyName: string; country: string; meetingDate: string
   voteDeadline: string; marketTimeZone: string; meetingType: string; deadlineStatus: DeadlineStatus
   proposalCount: number; votedCount: number
+  segments: { proposalId: number; call: Decision | null; vote: Decision | null }[]
 }
 export interface Proposal {
   id: number; seq: number; category: Category; title: string; description: string | null

@@ -6,7 +6,10 @@ export const Api = {
   meetings: () => api<MeetingSummary[]>('/api/meetings'),
   meeting: (id: number) => api<MeetingDetail>(`/api/meetings/${id}`),
   vote: (proposalId: number, decision: Decision, version?: number) =>
-    api<{ decision: Decision; version: number }>(`/api/proposals/${proposalId}/vote`, { method: 'PUT', body: JSON.stringify({ decision, version }) }),
+    api<{ proposalId: number; decision: Decision; submittedBy: string; submittedAt: string; version: number }>(
+      `/api/proposals/${proposalId}/vote`,
+      { method: 'PUT', body: JSON.stringify({ decision, version }) },
+    ),
   summarize: (proposalId: number, refresh = false) =>
     api<{ summary: string; source: string }>(`/api/proposals/${proposalId}/summary?refresh=${refresh}`, { method: 'POST' }),
   policy: () => api<Policy>('/api/policy'),
