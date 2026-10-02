@@ -41,6 +41,9 @@ services:
       AWS_DEFAULT_REGION: ap-southeast-1
       # Lambda functions run as sibling Docker containers; they must join this network to reach LocalStack.
       LAMBDA_DOCKER_NETWORK: proxyvote_default
+      # LocalStack re-pulls the runtime image on every function create. public.ecr.aws can be unreachable on some
+      # networks, so use AWS's official Docker Hub copy of the same Java 21 base image, via Google's Docker Hub mirror.
+      LAMBDA_RUNTIME_IMAGE_MAPPING: '{"java21": "mirror.gcr.io/amazon/aws-lambda-java:21"}'
     ports: ["4567:4566"]
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"

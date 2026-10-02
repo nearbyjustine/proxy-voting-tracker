@@ -26,7 +26,8 @@ await page.screenshot({ path: shots + '/meetings.png', fullPage: true })
 const link = await page.$$eval('tbody tr', (rows) => rows.find((r) => r.innerText.includes('ORCH')).querySelector('a').getAttribute('href'))
 await page.goto(BASE + link, { waitUntil: 'networkidle0' }); await page.waitForSelector('.proposal')
 const firstVote = await page.$$('.proposal .votes button'); await firstVote[1].click()   // AGAINST on proposal 1
-await page.waitForFunction(() => document.querySelector('.proposal small')?.textContent?.includes('sam'))
+// look at the vote column only (a cached summary also has a <small> label, so don't grab the first one)
+await page.waitForFunction(() => [...document.querySelector('.proposal .grid3').querySelectorAll('small')].some((s) => s.textContent.includes('sam')))
 const sumBtn = await page.$('.proposal button.ghost.small'); if (sumBtn) { await sumBtn.click(); await page.waitForSelector('.summary') }
 console.log('ORCH proposal 1:', await page.$eval('.proposal', (e) => e.innerText.replace(/\s+/g, ' ').slice(0, 330)))
 await page.screenshot({ path: shots + '/meeting-detail.png', fullPage: true })
